@@ -31,7 +31,81 @@ describe("Can bowl with scoring", () => {
 
     })
 
+    it("Scores last frame with a strike correctly", () => {
+        const bowling = new Bowling();
 
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(10);
+        bowling.roll(4);
+        bowling.roll(4);
+
+        expect(bowling.score()).toEqual((9*4)+(10+4+4));
+
+    })
+
+    it("Scores last with a spare correctly", () => {
+        const bowling = new Bowling();
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(5);
+        bowling.roll(5);
+        bowling.roll(4);
+
+        expect(bowling.score()).toEqual((9*4)+(5+5+4));
+
+    });
     it("Throws error with bad input for spare frame", () =>{
         expect(() => new SpareFrame([5, 4])).toThrowError(InvalidSpareFrame);
     })
