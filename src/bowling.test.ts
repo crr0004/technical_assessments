@@ -1,5 +1,5 @@
-import {Bowling, MAX_PINS, SpareFrame, StrikeFrame} from './bowling';
-import { InvalidSpareFrame, InvalidStrikeFrame } from './errors';
+import {Bowling, LastFrame, MAX_PINS, SpareFrame, StrikeFrame} from './bowling';
+import { GameFinished, InvalidRoll, InvalidSpareFrame, InvalidStrikeFrame } from './errors';
 describe("Can bowl with scoring", () => {
     it("Scores non-special frames", () => {
         const bowling = new Bowling();
@@ -62,12 +62,62 @@ describe("Can bowl with scoring", () => {
         bowling.roll(4);
 
         bowling.roll(10);
+        expect(bowling.state.frame.frameFinished()).toBe(false);
+        bowling.roll(4);
+        expect(bowling.state.frame.frameFinished()).toBe(false);
+        bowling.roll(4);
+        expect(bowling.state.frame.frameFinished()).toBe(true);
+
+        expect(bowling.state.frame.rolls).toStrictEqual([10, 4]);
+        expect((bowling.state.frame as LastFrame).extraRoll).toStrictEqual(4);
+
+        expect(bowling.score()).toEqual((9*8)+(10+4+4));
+        expect(() => bowling.roll(5)).toThrowError(GameFinished);
+
+    });
+
+    it("Scores last frame with no strike or spare correctly", () => {
+        const bowling = new Bowling();
+
         bowling.roll(4);
         bowling.roll(4);
 
-        expect(bowling.score()).toEqual((9*4)+(10+4+4));
+        bowling.roll(4);
+        bowling.roll(4);
 
-    })
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(4);
+        bowling.roll(4);
+
+        bowling.roll(5);
+        expect(bowling.state.frame.frameFinished()).toBe(false);
+
+        bowling.roll(4);
+        expect(bowling.state.frame.frameFinished()).toBe(true);
+
+        expect(bowling.state.frame.rolls).toStrictEqual([5, 4]);
+
+        expect(bowling.score()).toEqual((9*8)+(5+4));
+
+        expect(() => bowling.roll(5)).toThrowError(GameFinished);
+    });
 
     it("Scores last with a spare correctly", () => {
         const bowling = new Bowling();
@@ -100,10 +150,20 @@ describe("Can bowl with scoring", () => {
         bowling.roll(4);
 
         bowling.roll(5);
-        bowling.roll(5);
-        bowling.roll(4);
+        expect(bowling.state.frame.frameFinished()).toBe(false);
 
-        expect(bowling.score()).toEqual((9*4)+(5+5+4));
+        bowling.roll(5);
+        expect(bowling.state.frame.frameFinished()).toBe(false);
+
+        bowling.roll(4);
+        expect(bowling.state.frame.frameFinished()).toBe(true);
+
+        expect(bowling.state.frame.rolls).toStrictEqual([5, 5]);
+        expect((bowling.state.frame as LastFrame).extraRoll).toStrictEqual(4);
+
+        expect(bowling.score()).toEqual((9*8)+(5+5+4));
+
+        expect(() => bowling.roll(5)).toThrowError(GameFinished);
 
     });
     it("Throws error with bad input for spare frame", () =>{
@@ -112,5 +172,9 @@ describe("Can bowl with scoring", () => {
     it("Throws error with bad input for strike frame", () => {
         expect(() => new StrikeFrame([1, 3])).toThrowError(InvalidStrikeFrame);
         expect(() => new StrikeFrame([10, 3])).toThrowError(InvalidStrikeFrame);
+    })
+    it("Throws an error with a bad roll number", () => {
+        expect(() => new Bowling().roll(-1)).toThrowError(InvalidRoll);
+        expect(() => new Bowling().roll(11)).toThrowError(InvalidRoll);
     })
 })
