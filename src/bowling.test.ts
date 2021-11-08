@@ -203,6 +203,15 @@ describe("Can bowl with scoring", () => {
         expect(() => bowling.roll(5)).toThrowError(GameFinished);
 
     });
+    it("Double strike without next frame is scored correctly", () => {
+        const bowling = new Bowling();
+
+        bowling.roll(10);
+        bowling.roll(10);
+        
+        expect(bowling.score()).toEqual(30);
+
+    })
     it("Game with spares scored correctly", () => {
         const bowling = new Bowling();
 

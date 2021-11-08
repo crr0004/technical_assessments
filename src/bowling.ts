@@ -46,7 +46,7 @@ export class StrikeFrame extends Frame{
 
         // When we have two strikes in a row, we need to look even further ahead to get the right score
         if(nextFrame instanceof StrikeFrame){
-            score += (states[currentIndex+2].frame.rolls[0] || 0)
+            score += (states[currentIndex+2]?.frame.rolls[0] || 0)
         }
 
         return score;
