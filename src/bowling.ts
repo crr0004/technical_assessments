@@ -126,17 +126,28 @@ function score(pins: number, currentState: State): State{
 
 function scoreLastFrame(pins: number, currentState: State): State{
 
+    /**
+     * This is a bit of a mess of a function. The last frame is a bit of special one because of the interaction between
+     * spares and strikes with the extra roll. As long as we keep this more humble code to the LastFrame class and this function,
+     * it should be okay.
+     * 
+     * Basically what this is does allows for MAX_PINS as the first roll to roll twice again.
+     * However when the first roll isn't a strike, we roll normally unless we get a spare, which we allow for an extra roll.
+     */
     let frame = new LastFrame([pins, RollStatus.UNROLLED], RollStatus.UNROLLED)
     if(currentState.frame instanceof LastFrame){
+        // Hit a strike so two more rolls
         if(currentState.frame.rolls[0] === MAX_PINS){
             if(currentState.frame.rolls[1] === RollStatus.UNROLLED){
                 currentState.frame.rolls[1] = pins;
             }else{
                 currentState.frame.extraRoll = pins;
             }
+        // Hit a spare so put the roll in the extra slot
         }else if(currentState.frame.rolls[0] + currentState.frame.rolls[1] === MAX_PINS){
             currentState.frame.extraRoll = pins;
         }else{
+            // No strike but this could be a spare, let the finish function figure it out
             currentState.frame.rolls[1] = pins;
         }
         // Need to carry the frame forward for the extra rolls
@@ -163,7 +174,7 @@ export class Bowling{
             throw new InvalidRoll();
         }
         let nextState = this.state.nextFunction(pins, this.state);
-        // Only want to store the state when both rolls have been made
+        // Only want to store the state when the frame is finished
         if(nextState.frame.frameFinished()){
             this.scores.push(nextState);
 
