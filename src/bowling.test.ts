@@ -1,4 +1,5 @@
-import {Bowling} from './bowling';
+import {Bowling, SpareFrame, StrikeFrame} from './bowling';
+import { InvalidSpareFrame, InvalidStrikeFrame } from './errors';
 describe("Can bowl with scoring", () => {
     it("Scores non-special frames", () => {
         const bowling = new Bowling();
@@ -28,5 +29,13 @@ describe("Can bowl with scoring", () => {
 
        expect(bowling.score()).toEqual((10+5+4)+(5+4));
 
+    })
+
+    it("Throws error with bad input for spare frame", () =>{
+        expect(() => new SpareFrame([5, 4])).toThrowError(InvalidSpareFrame);
+    })
+    it("Throws error with bad input for strike frame", () => {
+        expect(() => new StrikeFrame([1, 3])).toThrowError(InvalidStrikeFrame);
+        expect(() => new StrikeFrame([10, 3])).toThrowError(InvalidStrikeFrame);
     })
 })
