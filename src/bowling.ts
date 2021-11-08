@@ -13,7 +13,12 @@ class Frame{
     frameFinished(): boolean{
         return this.rolls[0] !== RollStatus.UNROLLED && this.rolls[1] !== RollStatus.UNROLLED;
     }
+    // We don't use the next frame here however we still need for the signature so we ignore the lint warning
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    scoreFrame(_: Frame | undefined): number{
+        return this.rolls[0] + this.rolls[1];
 
+    }
 }
 export class SpareFrame extends Frame{
     constructor(rolls: [number, number]){
@@ -21,7 +26,9 @@ export class SpareFrame extends Frame{
             throw new InvalidSpareFrame();
         }
         super(rolls);
-
+    }
+    scoreFrame(nextFrame: Frame | undefined): number{
+        return super.scoreFrame(nextFrame) + (nextFrame?.rolls[0] || 0);
     }
 }
 export class StrikeFrame extends Frame{
@@ -30,6 +37,9 @@ export class StrikeFrame extends Frame{
             throw new InvalidStrikeFrame();
         }
         super(rolls);
+    }
+    scoreFrame(nextFrame: Frame | undefined): number{
+        return super.scoreFrame(nextFrame) + (nextFrame?.rolls[0] || 0) + (nextFrame?.rolls[1] || 0);
     }
 }
 
@@ -59,6 +69,14 @@ export class LastFrame extends Frame{
 
         return frameFinished;
     }
+    scoreFrame(nextFrame: Frame | undefined): number{
+        let score = super.scoreFrame(nextFrame);
+        if(this.extraRoll !== RollStatus.UNROLLED){
+            score += this.extraRoll;
+        }
+        return score;
+    }
+    
 }
 
 interface State{
@@ -66,7 +84,10 @@ interface State{
     readonly nextFunction: (pins: number, currentFrame: State) => State;
 }
 
-function newFrame(pins: number, currentFrame: State): State{
+// We don't use the state variable in the the new frame 
+// because it is being created here however still need it for the signature so we ignore the lint warning
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function newFrame(pins: number, _: State): State{
     let frame = new Frame([pins, RollStatus.UNROLLED]);
     let nextFunction = score;
 
@@ -150,23 +171,7 @@ export class Bowling{
 
     score(): number{
         return this.scores.reduce((previousValue, state, currentIndex, array) => { 
-            let score = previousValue + (state.frame.rolls[0] + state.frame.rolls[1]);
-
-            // We can't go any further so don't worry about the different types of frames
-            if(currentIndex === array.length-1){
-                if(state.frame instanceof LastFrame && state.frame.extraRoll !== RollStatus.UNROLLED){
-                    score += state.frame.extraRoll;
-                }
-                return score;
-            }
-
-            if(state.frame instanceof SpareFrame){
-                score += array[currentIndex+1].frame.rolls[0];
-            }else if(state.frame instanceof StrikeFrame){
-                score += array[currentIndex+1].frame.rolls[0] + array[currentIndex+1].frame.rolls[1];
-            }
-
-            return score;
+            return previousValue + state.frame.scoreFrame((array[currentIndex+1]?.frame || undefined));
         }, 0)
     }
 }

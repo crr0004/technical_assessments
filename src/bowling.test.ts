@@ -16,9 +16,25 @@ describe("Can bowl with scoring", () => {
         bowling.roll(5);
         bowling.roll(4);
 
-       expect(bowling.score()).toEqual((5+5+5)+(5+4));
+        expect(bowling.score()).toEqual((5 + 5 + 5) + (5 + 4));
 
     });
+    it("Scores a spare correctly when no further frames exist", () => {
+        const bowling = new Bowling();
+        // Spare
+        bowling.roll(5);
+        bowling.roll(5);
+
+
+        expect(bowling.score()).toEqual(5 + 5);
+    })
+    it("Scores a strike correctly when no further frames exist", () => {
+        const bowling = new Bowling();
+        // Spare
+        bowling.roll(10);
+
+        expect(bowling.score()).toEqual(10);
+    })
     it("Scores a strike correctly", () => {
         const bowling = new Bowling();
         // Strike
