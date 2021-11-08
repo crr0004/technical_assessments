@@ -15,7 +15,7 @@ class Frame{
     }
     // We don't use the next frame here however we still need for the signature so we ignore the lint warning
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    scoreFrame(_: Frame | undefined): number{
+    scoreFrame(currentIndex: number, frames: Array<State>): number{
         return this.rolls[0] + this.rolls[1];
 
     }
@@ -27,8 +27,8 @@ export class SpareFrame extends Frame{
         }
         super(rolls);
     }
-    scoreFrame(nextFrame: Frame | undefined): number{
-        return super.scoreFrame(nextFrame) + (nextFrame?.rolls[0] || 0);
+    scoreFrame(currentIndex: number, states: Array<State>): number{
+        return super.scoreFrame(currentIndex, states) + (states[currentIndex+1]?.frame.rolls[0] || 0);
     }
 }
 export class StrikeFrame extends Frame{
@@ -38,8 +38,18 @@ export class StrikeFrame extends Frame{
         }
         super(rolls);
     }
-    scoreFrame(nextFrame: Frame | undefined): number{
-        return super.scoreFrame(nextFrame) + (nextFrame?.rolls[0] || 0) + (nextFrame?.rolls[1] || 0);
+    scoreFrame(currentIndex: number, states: Array<State>): number{
+        let score = super.scoreFrame(currentIndex, states);
+        const nextFrame = states[currentIndex+1]?.frame;
+
+        score += (nextFrame?.rolls[0] || 0) + (nextFrame?.rolls[1] || 0);
+
+        // When we have two strikes in a row, we need to look even further ahead to get the right score
+        if(nextFrame instanceof StrikeFrame){
+            score += (states[currentIndex+2].frame.rolls[0] || 0)
+        }
+
+        return score;
     }
 }
 
@@ -69,8 +79,8 @@ export class LastFrame extends Frame{
 
         return frameFinished;
     }
-    scoreFrame(nextFrame: Frame | undefined): number{
-        let score = super.scoreFrame(nextFrame);
+    scoreFrame(currentIndex: number, states: Array<State>): number{
+        let score = super.scoreFrame(currentIndex, states);
         if(this.extraRoll !== RollStatus.UNROLLED){
             score += this.extraRoll;
         }
@@ -171,7 +181,7 @@ export class Bowling{
 
     score(): number{
         return this.scores.reduce((previousValue, state, currentIndex, array) => { 
-            return previousValue + state.frame.scoreFrame((array[currentIndex+1]?.frame || undefined));
+            return previousValue + state.frame.scoreFrame(currentIndex, array);
         }, 0)
     }
 }

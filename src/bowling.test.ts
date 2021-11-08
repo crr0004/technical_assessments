@@ -30,7 +30,7 @@ describe("Can bowl with scoring", () => {
     })
     it("Scores a strike correctly when no further frames exist", () => {
         const bowling = new Bowling();
-        // Spare
+        // Strike
         bowling.roll(10);
 
         expect(bowling.score()).toEqual(10);
@@ -180,6 +180,58 @@ describe("Can bowl with scoring", () => {
         expect(bowling.score()).toEqual((9*8)+(5+5+4));
 
         expect(() => bowling.roll(5)).toThrowError(GameFinished);
+
+    });
+    it("Perfact game is scored correctly", () => {
+        const bowling = new Bowling();
+
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+
+        bowling.roll(10);
+        bowling.roll(10);
+        bowling.roll(10);
+
+        expect(bowling.score()).toEqual(300);
+        expect(() => bowling.roll(5)).toThrowError(GameFinished);
+
+    });
+    it("Game with spares scored correctly", () => {
+        const bowling = new Bowling();
+
+        bowling.roll(5);
+        bowling.roll(3);
+
+        bowling.roll(5);
+        bowling.roll(3);
+
+        bowling.roll(5);
+        bowling.roll(5);
+
+        bowling.roll(5);
+        bowling.roll(3);
+
+        bowling.roll(5);
+        bowling.roll(5);
+
+        bowling.roll(5);
+        bowling.roll(3);
+
+        expect(bowling.score()).toEqual(
+            (5 + 3) +
+            (5 + 3) +
+            (5 + 5 + 5) + // spare
+            (5 + 3) +
+            (5 + 5 + 5) +
+            (5 + 3)
+        );
 
     });
     it("Throws error with bad input for spare frame", () =>{
