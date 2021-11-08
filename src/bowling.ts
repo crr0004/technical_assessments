@@ -124,7 +124,7 @@ function score(pins: number, currentState: State): State{
     }
 }
 
-function scoreLastFrame(pins: number, currentState: State): State{
+function rollLastFrame(pins: number, currentState: State): State{
 
     /**
      * This is a bit of a mess of a function. The last frame is a bit of special one because of the interaction between
@@ -155,7 +155,7 @@ function scoreLastFrame(pins: number, currentState: State): State{
     }
     return {
         frame: frame,
-        nextFunction: scoreLastFrame
+        nextFunction: rollLastFrame
     }
 }
 
@@ -182,7 +182,7 @@ export class Bowling{
             if(this.scores.length === MAX_FRAMES-1){
                 nextState = {
                     frame: nextState.frame,
-                    nextFunction: scoreLastFrame
+                    nextFunction: rollLastFrame
                 }
             }
         }
