@@ -7,6 +7,7 @@ export enum LinkTypes {
 }
 
 export interface ClassicLink extends Link {
+    readonly id: string;
 
 }
 

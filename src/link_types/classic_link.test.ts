@@ -1,9 +1,8 @@
-import { Link } from '../link/link'
 import {MAX_TITLE_LENGTH, validate} from './classic_link'
 import { ClassicLink, LinkTypes } from './types'
 describe("Classic links", () => {
     it("Validate the title", () => {
-        let link = {
+        const link = {
             dateCreated: Date.now(),
             type: LinkTypes.CLASSIC,
             url: "http://hello.example.com",

@@ -7,16 +7,14 @@ import * as common from './link_types/common';
 const port = 3000;
 const app = express()
 app.use(express.json())
-// app.use(express.text())
 
-//@ts-ignore
-app.use(function(err, req, res, next) {
+app.use(function(err: any, req: any, res: any, next: any) {
     if(err instanceof SyntaxError){
         res.statusCode = 400;
         res.send("Something went wrong with parsing the JSON, are you sure it's corect?");
         console.error(err);
     }
-
+    next(err);
 })
 
 type types = keyof typeof LinkTypes;

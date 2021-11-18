@@ -1,5 +1,4 @@
 import { getByUserId } from './common'
-import { LinkTypes } from './types';
 describe("Common functions", () => {
     it("Can read files for users", () => {
         const links = getByUserId("");

@@ -7,6 +7,8 @@
 
 You can lint with `npm run lint`.
 
+There are some lint warnings due to express and some empty implementations.
+
 
 # Notes
 
