@@ -6,6 +6,18 @@ import * as common from './link_types/common';
 
 const port = 3000;
 const app = express()
+app.use(express.json())
+// app.use(express.text())
+
+//@ts-ignore
+app.use(function(err, req, res, next) {
+    if(err instanceof SyntaxError){
+        res.statusCode = 400;
+        res.send("Something went wrong with parsing the JSON, are you sure it's corect?");
+        console.error(err);
+    }
+
+})
 
 type types = keyof typeof LinkTypes;
 app.post("/link/:type", (req, res) => {
@@ -19,14 +31,16 @@ app.post("/link/:type", (req, res) => {
             getByUserId: common.getByUserId
         }
         // TODO: This should be sanitized properly before passing in
+        // TODO: The validation call should be throwing validation errors with exactly what failed and caught here
         if(createLink(req.body, deps)){
             res.sendStatus(200);
         }else{
-            res.sendStatus(500);
+            res.statusCode = 400;
+            res.send("Couldn't create the link, are you sure it's the correct format?");
         }
     }else{
         res.statusCode = 400;
-        res.send("Couldn't find the link type");
+        res.send("Couldn't find that link type");
     }
 });
 app.get("/link/:userId", (req, res) => {
@@ -34,10 +48,12 @@ app.get("/link/:userId", (req, res) => {
         getByUserId: common.getByUserId,
         save: common.save
     }
-    const links = getByUserId(req.params.userId, deps);
+    const sort = req.query.sort ? true : false;
+    const links = getByUserId(req.params.userId, deps, sort);
     // TODO: This should be sanitized before sending back out. Can't trust what is in the store
     res.send(links);
 })
+
 
 app.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
