@@ -1,6 +1,9 @@
 export interface Link{
     readonly userId: string;
-    readonly dateCreated: Date;
+    readonly dateCreated: number;
+    readonly url: string;
+    readonly type: string;
+    readonly title: string;
 }
 export interface Dependencies{
     validate: (link: Link) => boolean,
@@ -13,7 +16,12 @@ export interface ThirdPartyDepdencies{
 }
 export function createLink(link: Link, deps: Dependencies & ThirdPartyDepdencies): boolean{
     if(deps.validate(link)){
+        // This may want to happen when they're retrieved, rather than stored
         link = deps.enrich(link);
+        link = {
+            ...link,
+            dateCreated: Date.now()
+        }
         deps.save(link);
         return true;
     }
@@ -21,7 +29,11 @@ export function createLink(link: Link, deps: Dependencies & ThirdPartyDepdencies
     return false;
 }
 
-export function getByUserId(userId: string, deps: ThirdPartyDepdencies): Array<Link>{
+export function getByUserId(userId: string, deps: ThirdPartyDepdencies, shouldSort = false): Link[]{
+    let sortedLinks: Link[] = deps.getByUserId(userId);
 
-    return deps.getByUserId(userId);
+    if(shouldSort){
+        sortedLinks = sortedLinks.sort((a,b) => a.dateCreated - b.dateCreated);
+    }
+    return sortedLinks;
 }
