@@ -1,10 +1,9 @@
 import { Link } from "../link/link";
-import { ClassicLink } from "./types";
 
-export function validate(link: ClassicLink): boolean{
+export function validate(link: Link): boolean{
     return false
 
 }
-export function enrich(link: ClassicLink): Link{
+export function enrich(link: Link): Link{
     return link
 }

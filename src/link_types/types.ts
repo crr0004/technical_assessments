@@ -1,4 +1,4 @@
-import { Dependencies, Link } from "../link/link";
+import { Link } from "../link/link";
 
 export enum LinkTypes {
     CLASSIC = "classic",
@@ -7,13 +7,16 @@ export enum LinkTypes {
 }
 
 export interface ClassicLink extends Link {
+    readonly title: string;
 
 }
 
 export interface MusicLink extends Link {
+    readonly songId: string;
 
 }
 
 export interface ShowsLink extends Link {
+    readonly showId: string;
 
 }
