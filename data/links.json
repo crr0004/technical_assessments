@@ -1,0 +1,45 @@
+[
+    {
+        "userId": "yourname",
+        "title": "48H",
+        "url": "http://classic",
+        "type": "classic",
+        "dateCreated": 1637199439
+    },
+    {
+        "userId": "yourname",
+        "title": "Music",
+        "url": "http://somesong.example.com",
+        "type": "song",
+        "dateCreated": 1637203012
+    },
+    {
+        "userId": "yourname",
+        "title": "Shows",
+        "url": "http://someshow.example.com",
+        "type": "show",
+        "dateCreated": 1637195812,
+        "shows": [
+            {
+                "date": "Apr 01 2019",
+                "venue": "The Forum, Melbourne",
+                "status": "onsale"
+            },
+            {
+                "date": "Apr 02 2019",
+                "venue": "Venue Name, Canberra",
+                "status": "soldout"
+            },
+            {
+                "date": "Apr 03 2019",
+                "venue": "Venue Name, Sydney",
+                "status": "onsale"
+            },
+            {
+                "date": "Apr 04 2019",
+                "venue": "Venue Name, Brisbane",
+                "status": "onsale"
+            }
+        ]
+    }
+]
