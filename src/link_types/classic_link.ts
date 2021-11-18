@@ -6,6 +6,7 @@ export function validate(link: Link): boolean{
     if(link.title && link.title.length <= MAX_TITLE_LENGTH){
         valid = true;
     }
+    //TODO: This should throw an error rather an returning boolean
     
     return valid;
 
